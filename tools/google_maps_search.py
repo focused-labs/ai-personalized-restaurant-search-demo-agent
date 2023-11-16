@@ -1,6 +1,6 @@
 import requests
 
-MAX_NUMBER_OF_RESTAURANTS = 1
+from config import MAX_NUMBER_OF_RESTAURANTS, RESTAURANT_SEARCH_RADIUS
 
 
 def get_lat_lng_from_address(api_key, address):
@@ -35,7 +35,7 @@ def get_place_details(api_key, place_id):
     return result['result']
 
 
-def find_nearby_restaurants(api_key, latitude, longitude, radius=500):
+def find_nearby_restaurants(api_key, latitude, longitude):
     """
     Fetch nearby restaurants using Google Places API and get additional
     details using Google's Place Details API.
@@ -52,7 +52,7 @@ def find_nearby_restaurants(api_key, latitude, longitude, radius=500):
     endpoint_url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
     params = {
         'location': f"{latitude},{longitude}",
-        'radius': radius,
+        'radius': RESTAURANT_SEARCH_RADIUS,
         'type': 'restaurant',
         'key': api_key
     }
@@ -83,7 +83,7 @@ def find_nearby_restaurants(api_key, latitude, longitude, radius=500):
     return restaurants
 
 
-def google_maps_search(api_key, address, radius=500):
+def google_maps_search(api_key, address):
     """
     Unified function to retrieve nearby restaurants for a given address using Google Maps APIs.
 
@@ -97,7 +97,7 @@ def google_maps_search(api_key, address, radius=500):
     """
     latitude, longitude = get_lat_lng_from_address(api_key, address)
 
-    restaurants = find_nearby_restaurants(api_key, latitude, longitude, radius)
+    restaurants = find_nearby_restaurants(api_key, latitude, longitude)
     if not restaurants:
         return "Unable to find nearby restaurants."
 
